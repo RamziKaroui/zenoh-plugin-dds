@@ -28,36 +28,36 @@ Check the website [zenoh.io](http://zenoh.io) and the [roadmap](https://github.c
 
 ## Background
 
-The Data Distribution Service (DDS) is a standard for data-centric publish subscribe. Whilst DDS has been around for quite some time and has a long history of deployments in various industries, it has recently gained quite a bit of attentions thanks to its adoption by the Robotic Operating System (ROS 2) -- where it is used for communication between ROS 2 nodes.
+The Data Distribution Service (DDS) is a standard for data-centric publish-subscribe. Whilst DDS has been around for quite some time and has a long history of deployments in various industries, it has recently gained quite a bit of attention thanks to its adoption by the Robotic Operating System (ROS 2) -- where it is used for communication between ROS 2 nodes.
 
 ### ⚠️ On usage with ROS 2 ⚠️
 
 This plugin is based on the DDS standard, and thus can work with ROS 2 to some extent.
 
-However we strongly advise ROS 2 users to rather try the **new [`zenoh-plugin-ros2dds`](https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds)** which is dedicated to the support of ROS 2 with DDS.
+However, we strongly advise ROS 2 users to try the **new [`zenoh-plugin-ros2dds`](https://github.com/eclipse-zenoh/zenoh-plugin-ros2dds)**, which is dedicated to the support of ROS 2 with DDS.
 Thanks to a better integration with ROS 2 concepts, this new plugin comes with those benefits:
 
 - Better integration of the **ROS graph** (all ROS topics/services/actions can be seen across bridges)
 - Better support of **ROS toolings** (ros2 CLI, rviz2...)
 - Configuration of a **ROS namespace** on the bridge (instead of on each ROS Node)
-- Services and Action as **Zenoh Queryables** with more efficiency and scalability that RPC over DDS
+- Services and Action as **Zenoh Queryables** with more efficiency and scalability than RPC over DDS
 - Even more **compact discovery information** between the bridges (not forwarding all `ros_discovery_info` messages as such)
 
 This Zenoh plugin for DDS will eventually be deprecated for ROS 2 usage.
 
-## Plugin or bridge ?
+## Plugin or bridge?
 
 This software is built in 2 ways to choose from:
 
 - `zenoh-plugin-dds`: a Zenoh plugin - a dynamic library that can be loaded by a Zenoh router
 - `zenoh-bridge-dds`: a standalone executable
 
-The features and configurations described in this document applies to both.
-Meaning the _"plugin"_ and _"bridge"_  words are interchangeables in the rest of this document.
+The features and configurations described in this document apply to both.
+Meaning the _"plugin"_ and _"bridge"_  words are interchangeable in the rest of this document.
 
 ## How to install it
 
-To install the latest release of either the DDS plugin for the Zenoh router, either the `zenoh-bridge-dds` standalone executable, you can do as follows:
+To install the latest release of either the DDS plugin for the Zenoh router, or the `zenoh-bridge-dds` standalone executable, you can do as follows:
 
 ### Manual installation (all platforms)
 
@@ -70,7 +70,7 @@ Each subdirectory has the name of the Rust target. See the platforms each target
 Choose your platform and download:
 
 - the `zenoh-plugin-dds-<version>-<platform>.zip` file for the plugin.  
-  Then unzip it in the same directory than `zenohd` or to any directory where it can find the plugin library (e.g. /usr/lib)
+  Then unzip it in the same directory as `zenohd` or to any directory where it can find the plugin library (e.g. /usr/lib)
 - the `zenoh-bridge-dds-<version>-<platform>.zip` file for the standalone executable.  
   Then unzip it where you want, and run the extracted `zenoh-bridge-dds` binary.
 
@@ -90,11 +90,11 @@ Then either:
 
 ## How to build it
 
-> :warning: **WARNING** :warning: : As Rust doesn't have a stable ABI, the plugins should be
-built with the exact same Rust version than `zenohd`, and using for `zenoh` dependency the same version (or commit number) than 'zenohd'.
+> :warning: **WARNING** :warning:: As Rust doesn't have a stable ABI, the plugins should be
+built with the exact same Rust version as `zenohd`, and using for `zenoh` dependency the same version (or commit number) than 'zenohd'.
 Otherwise, incompatibilities in memory mapping of shared types between `zenohd` and the library can lead to a `"SIGSEV"` crash.
 
-In order to build the zenoh bridge for DDS you need first to install the following dependencies:
+In order to build the Zenoh bridge for DDS, you need first to install the following dependencies:
 
 - [Rust](https://www.rust-lang.org/tools/install). If you already have the Rust toolchain installed, make sure it is up-to-date with:
 
@@ -103,10 +103,10 @@ rustup update
 ```
 
 - On Linux, make sure the `llvm` and `clang` development packages are installed:
-  - on Debians do: `sudo apt install llvm-dev libclang-dev`
+  - on Debian do: `sudo apt install llvm-dev libclang-dev`
   - on CentOS or RHEL do: `sudo yum install llvm-devel clang-devel`
   - on Alpine do: `apk install llvm11-dev clang-dev`
-- [CMake](https://cmake.org/download/) (to build CycloneDDS which is a native dependency)
+- [CMake](https://cmake.org/download/) (to build CycloneDDS, which is a native dependency)
 
 Once these dependencies are in place, you may clone the repository on your machine:
 
@@ -123,9 +123,9 @@ loaded by the zenoh router `zenohd` will be generated in the `target/release` su
 
 Cyclone DDS Shared memory support is provided by the Iceoryx PSMX plugin based on the [Iceoryx library](https://iceoryx.io/). Iceoryx introduces additional system requirements which are documented [here](https://iceoryx.io/v2.0.5/getting-started/installation/#dependencies).
 
-**Note:** To ensure successful communication the entire system should be built to use the same version of the Iceoryx Library. **The Zenoh DDS Plugin currently uses Iceoryx v2.0.5.**
+**Note:** To ensure successful communication, the entire system should be built to use the same version of the Iceoryx Library. **The Zenoh DDS Plugin currently uses Iceoryx v2.0.5.**
 
-To build the zenoh bridge for DDS with support for shared memory the `dds_shm` optional feature must be enabled during the build process as follows:
+To build the Zenoh bridge for DDS with support for shared memory, the `dds_shm` optional feature must be enabled during the build process as follows:
 
 - plugin library:
 
@@ -141,7 +141,7 @@ cargo build --release -p zenoh-bridge-dds --features dds_shm
 
 **Note:** Iceoryx does not need to be installed to build the bridge when the `dds_shm` feature is enabled. Iceoryx will be automatically downloaded, compiled, and statically linked into the zenoh bridge as part of the cargo build process.
 
-When the zenoh bridge is configured to use DDS shared memory (see [Configuration](#configuration)) the **Iceoryx RouDi daemon (`iox-roudi`)** must be running in order for the bridge to start successfully. If not started the bridge will wait for a period of time for the daemon to become available before timing out and terminating.
+When the zenoh bridge is configured to use DDS shared memory (see [Configuration](#configuration)) the **Iceoryx RouDi daemon (`iox-roudi`)** must be running in order for the bridge to start successfully. If not started, the bridge will wait for a period of time for the daemon to become available before timing out and terminating.
 
 When building the zenoh bridge with the `dds_shm` feature enabled the `iox-roudi` daemon is also built for convenience. The daemon can be found under `target/debug|release/build/cyclors-<hash>/out/iceoryx-build/bin/iox-roudi`.
 
@@ -152,14 +152,14 @@ See [here](https://cyclonedds.io/docs/cyclonedds/latest/shared_memory/shared_mem
 The following limitations apply to Cyclone DDS shared memory support in the plugin:
 
 - Shared memory is not supported on Windows systems.
-- When DDS shared memory is enabled the Iceoryx PSMX plugin will be instantiated with the default configuration. If additional configuration is required the Iceoryx plugin should be configured via the `CYCLONEDDS_URI` instead.
-- In forward discovery mode DDS samples will not be forwarded via Zenoh unless the DDS data type is memcpy safe. A data type is memcpy safe if it does not contain indirections.
+- When DDS shared memory is enabled the Iceoryx PSMX plugin will be instantiated with the default configuration. If additional configuration is required, the Iceoryx plugin should be configured via the `CYCLONEDDS_URI` instead.
+- In forward discovery mode, DDS samples will not be forwarded via Zenoh unless the DDS data type is memcpy safe. A data type is memcpy safe if it does not contain indirections.
 
 ### DDS Library Symbol Prefixing
 
 DDS support is provided by the [cyclors crate](https://crates.io/crates/cyclors). As this crate contains C code, symbol clashes may occur when loading the plugin statically with other plugins which use a different version of the ```cyclors``` crate (e.g. the ```zenoh-plugin-ros2dds``` plugin).
 
-To allow multiple versions of the ```cyclors``` crate to be loaded at the same time the symbols within the crate can be prefixed with the crate version. The optional ```prefix_symbols``` feature can be used to build the DDS plugin with prefixed DDS library symbols. e.g.
+To allow multiple versions of the ```cyclors``` crate to be loaded at the same time, the symbols within the crate can be prefixed with the crate version. The optional ```prefix_symbols``` feature can be used to build the DDS plugin with prefixed DDS library symbols. e.g.
 
 - plugin library:
 
@@ -177,7 +177,7 @@ cargo build --release -p zenoh-bridge-dds --features prefix_symbols
 
 ### Enabling DDS Security Support
 
-To build the zenoh bridge for DDS with support for DDS Security the `dds_security` optional feature must be enabled during the build process as follows:
+To build the Zenoh bridge for DDS with support for DDS Security the `dds_security` optional feature must be enabled during the build process as follows:
 
 - plugin library:
 
@@ -226,11 +226,11 @@ The **`zenoh-bridge-dds`** standalone executable is also available as a [Docker 
 - `docker pull eclipse/zenoh-bridge-dds:latest` for the latest release
 - `docker pull eclipse/zenoh-bridge-dds:main` for the main branch version (nightly build)
 
-:warning: **However, notice that it's usage is limited to Docker on Linux and using the `--net host` option.**  
+:warning: **However, notice that its usage is limited to Docker on Linux and using the `--net host` option.**  
 The cause being that DDS uses UDP multicast and Docker doesn't support UDP multicast between a container and its host (see cases [moby/moby#23659](https://github.com/moby/moby/issues/23659), [moby/libnetwork#2397](https://github.com/moby/libnetwork/issues/2397) or [moby/libnetwork#552](https://github.com/moby/libnetwork/issues/552)). The only known way to make it work is to use the `--net host` option that is [only supported on Linux hosts](https://docs.docker.com/network/host/).
 
 Usage: **`docker run --init --net host eclipse/zenoh-bridge-dds`**  
-It supports the same command line arguments than the `zenoh-bridge-dds` (see below or check with `-h` argument).
+It supports the same command line arguments as the `zenoh-bridge-dds` (see below or check with `-h` argument).
 
 -------------------------------
 
@@ -242,19 +242,19 @@ The use cases of this Zenoh plugin for DDS are various:
 - communication between DDS System and embedded devices thanks to [zenoh-pico](https://github.com/eclipse-zenoh/zenoh-pico)
 - bridging between different DDS Systems, across various transports, via a Zenoh infrastructure (i.e. some routers or directly in peer-to-peer between the bridges)
 - scaling a DDS system up to the Cloud with Zenoh routers
-- integration with any technology supported by other Zenoh Plugins (MQTT, ROS 2 ...) or Storages technology (InfluxDB, RocksDB)
+- integration with any technology supported by other Zenoh Plugins (MQTT, ROS 2 ...) or storage technologies (InfluxDB, RocksDB)
 
 ## Configuration
 
-`zenoh-bridge-dds` can be configured via a JSON5 file passed via the `-c`argument. You can see a commented example of such configuration file: [`DEFAULT_CONFIG.json5`](DEFAULT_CONFIG.json5).
+`zenoh-bridge-dds` can be configured via a JSON5 file passed via the `-c`argument. You can see a commented example of such a configuration file: [`DEFAULT_CONFIG.json5`](DEFAULT_CONFIG.json5).
 
-The `"dds"` part of this same configuration file can also be used in the configuration file for the zenoh router (within its `"plugins"` part). The router will automatically try to load the plugin library (`zenoh-plugin_dds`) at startup and apply its configuration.
+The `"dds"` part of this same configuration file can also be used in the configuration file for the Zenoh router (within its `"plugins"` part). The router will automatically try to load the plugin library (`zenoh-plugin_dds`) at startup and apply its configuration.
 
 `zenoh-bridge-dds` also accepts the following arguments. If set, each argument will override the similar setting from the configuration file:
 
 - zenoh-related arguments:
   - **`-c, --config <FILE>`** : a config file
-  - **`-m, --mode <MODE>`** : The zenoh session mode. Default: `peer` Possible values: `peer` or `client`.  
+  - **`-m, --mode <MODE>`** : The zenoh session mode. Default: `peer`. Possible values: `peer` or `client`.  
      See [zenoh documentation](https://zenoh.io/docs/getting-started/key-concepts/#deployment-units) for more details.
   - **`-l, --listen <LOCATOR>`** : A locator on which this router will listen for incoming sessions. Repeat this option to open several listeners. Example of locator: `tcp/localhost:7447`.
   - **`-e, --peer <LOCATOR>`** : A peer locator this router will try to connect to (typically another bridge or a zenoh router). Repeat this option to connect to several peers. Example of locator: `tcp/<ip-address>:7447`.
@@ -266,9 +266,9 @@ The `"dds"` part of this same configuration file can also be used in the configu
   - **`--dds-localhost-only`** : If set, the DDS discovery and traffic will occur only on the localhost interface (127.0.0.1).
     By default set to false, unless the "ROS_LOCALHOST_ONLY=1" environment variable is defined.
   - **`--dds-enable-shm`** : If set, DDS will be configured to use the Iceoryx shared memory PSMX plugin with default config. Requires the bridge to be built with the 'dds_shm' feature for this option to valid.
-    By default set to false.
+    By default, set to false.
   - **`-f, --fwd-discovery`** : When set, rather than creating a local route when discovering a local DDS entity, this discovery info is forwarded to the remote plugins/bridges. Those will create the routes, including a replica of the discovered entity. More details [here](#architecture-details)
-  - **`-s, --scope <String>`** : A string used as prefix to scope DDS traffic when mapped to zenoh keys.
+  - **`-s, --scope <String>`** : A string used as a prefix to scope DDS traffic when mapped to zenoh keys.
   - **`-a, --allow <String>`** :  A regular expression matching the set of 'partition/topic-name' that must be routed via zenoh.
     By default, all partitions and topics are allowed.  
     If both 'allow' and 'deny' are set a partition and/or topic will be allowed if it matches only the 'allow' expression.  
@@ -282,14 +282,14 @@ The `"dds"` part of this same configuration file can also be used in the configu
     If both 'allow' and 'deny' are set a partition and/or topic will be allowed if it matches only the 'allow' expression.  
     Repeat this option to configure several topic expressions. These expressions are concatenated with '|'.
   - **`--max-frequency <String>...`** : specifies a maximum frequency of data routing over zenoh per-topic. The string must have the format `"regex=float"` where:
-    - `"regex"` is a regular expression matching the set of 'partition/topic-name' for which the data (per DDS instance) must be routedat no higher rate than associated max frequency (same syntax than --allow option).
-    - `"float"` is the maximum frequency in Hertz; if publication rate is higher, downsampling will occur when routing.
+    - `"regex"` is a regular expression matching the set of 'partition/topic-name' for which the data (per DDS instance) must be routedat no higher rate than the associated max frequency (same syntax as --allow option).
+    - `"float"` is the maximum frequency in Hertz; if the publication rate is higher, downsampling will occur when routing.
 
       (usable multiple times)
   - **`--queries-timeout <Duration>`**: A duration in seconds (default: 5.0 sec) that will be used as a timeout when the bridge
     queries any other remote bridge for discovery information and for historical data for TRANSIENT_LOCAL DDS Readers it serves
-    (i.e. if the query to the remote bridge exceed the timeout, some historical samples might be not routed to the Readers,
-    but the route will not be blocked forever).
+    (i.e. if the query to the remote bridge exceeds the timeout, some historical samples might be not routed to the Readers,
+    but the route will not be blocked forever.
   - **`-w, --generalise-pub <String>`** :  A list of key expressions to use for generalising the declaration of
     the zenoh publications, and thus minimizing the discovery traffic (usable multiple times).
     See [this blog](https://zenoh.io/blog/2021-03-23-discovery/#leveraging-resource-generalisation) for more details.
@@ -365,9 +365,9 @@ In details, whether it's built as a library or as a standalone executable, it do
   - it does not forward to the remote bridge any DDS discovery information
 
 - in "forward discovery" mode
-  - each bridge will forward via zenoh the local DDS discovery data to the remote bridges (in a more compact way than the original DDS discovery traffic)
-  - each bridge receiving DDS discovery data via zenoh will create a replica of the DDS reader or writer, with similar QoS. Those replicas will serve the route to/from zenoh, and will be discovered by the ROS2 nodes.
-  - for ROS 2 systems, each bridge will forward the `ros_discovery_info` data (in a less intensive way than the original publications) to the remote bridges. On reception, the remote bridges will convert the original entities' GIDs into the GIDs of the corresponding replicas, and re-publish on DDS the `ros_discovery_info`. The full ROS graph can then be discovered by the ROS 2 nodes on each host.
+  - Each bridge will forward via Zenoh the local DDS discovery data to the remote bridges (in a more compact way than the original DDS discovery traffic)
+  - Each bridge receiving DDS discovery data via Zenoh will create a replica of the DDS reader or writer, with similar QoS. Those replicas will serve the route to/from Zenoh, and will be discovered by the ROS2 nodes.
+  - For ROS 2 systems, each bridge will forward the `ros_discovery_info` data (in a less intensive way than the original publications) to the remote bridges. On reception, the remote bridges will convert the original entities' GIDs into the GIDs of the corresponding replicas, and re-publish on DDS the `ros_discovery_info`. The full ROS graph can then be discovered by the ROS 2 nodes on each host.
 
 ### _Mapping of DDS topics to zenoh keys_
 
